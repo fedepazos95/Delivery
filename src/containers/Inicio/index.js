@@ -4,13 +4,13 @@ import React, { Component } from 'react';
 // React Bootstrap Components
 import { Jumbotron } from 'react-bootstrap';
 
-export default class Home extends Component {
+export default class Inicio extends Component {
   render() {
     return (
       <div>
         <Jumbotron>
-          <h1>Hello, world!</h1>
-          <p>This is a simple delivery app.</p>
+          <h1>Bienvenido!</h1>
+          <p>Esto es una simple aplicación de administración de deliveries</p>
         </Jumbotron>
       </div>
     )

@@ -1,7 +1,11 @@
+// Dependencies
 import { combineReducers } from 'redux';
 
+// Reducers
+import DeliveriesReducer from './reducer_deliveries';
+
 const rootReducer = combineReducers({
-  state: (state = {}) => state
+  deliveries: DeliveriesReducer
 });
 
 export default rootReducer;
