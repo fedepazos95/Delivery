@@ -1,44 +1,23 @@
-export default function() {
-  return [
-    {
-      nombre: 'Argentino',
-      descripcion: 'Argentino casa de comidas',
-      especialidades: 'Pizzas y empanadas',
-      direccion: 'Calle 20',
-      horario: 'horarioDeAtencion', //Incoporar Date
-      telefono: '48196084',
-      contactoAdministrativo: {
-        nombre: 'Juan',
-        apellido: 'Perez',
-        telefono: '1550809440',
-        email: 'juan.perez@gmail.com'
-      },
-      contactoComercial: {
-        nombre: 'Juan',
-        apellido: 'Perez',
-        telefono: '1550809440',
-        email: 'juan.perez@gmail.com'
-      }
-    },
-    {
-      nombre: 'Bar BQ',
-      descripcion: 'Bar BQ bebidas y tragos',
-      especialidades: 'Coctails y bebidas',
-      direccion: 'Calle 524',
-      horario: 'horarioDeAtencion', //Incoporar Date
-      telefono: '40849562',
-      contactoAdministrativo: {
-        nombre: 'Raul',
-        apellido: 'Gonzalez',
-        telefono: '1590846517',
-        email: 'raul.gonzalez@hotmail.com'
-      },
-      contactoComercial: {
-        nombre: 'Raul',
-        apellido: 'Gonzalez',
-        telefono: '1590846517',
-        email: 'raul.gonzalez@hotmail.com'
-      }
+const initialState = {
+  deliveries: [],
+  delivery: null
+};
+
+export default function reducerDeliveries(state = initialState, action) {
+  switch(action.type) {
+    case 'LIST_DELIVERIES': {
+      return Object.assign({}, state, {deliveries: action.payload});
     }
-  ]
+
+    case 'NEW_DELIVERY': {
+      return Object.assign({}, state, {delivery: {}});
+    }
+
+    case 'DELIVERY_SELECTED': {
+      return Object.assign({}, state, {delivery: action.payload});
+    }
+
+    default:
+      return state;
+  }
 }

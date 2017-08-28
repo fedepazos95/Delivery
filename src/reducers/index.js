@@ -2,10 +2,10 @@
 import { combineReducers } from 'redux';
 
 // Reducers
-import DeliveriesReducer from './reducer_deliveries';
+import deliveries from './reducer_deliveries';
 
 const rootReducer = combineReducers({
-  deliveries: DeliveriesReducer
+  deliveries
 });
 
 export default rootReducer;

@@ -1,34 +1,47 @@
 // Dependencies
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { listDeliveries, selectDelivery, newDelivery } from '../../actions/index';
+import { bindActionCreators } from 'redux';
 
 // React Bootstrap Components
-import { PageHeader, Modal, Panel, Glyphicon, Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
+import { PageHeader, Panel, Glyphicon, Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
 
 // Components
 import Grilla from '../../components/Grilla';
+import FormDelivery from '../../components/FormDelivery';
 
 class Deliveries extends Component {
+  static propTypes = {
+    deliveries: PropTypes.array.isRequired
+  }
 
   constructor(props) {
     super(props);
     this.state = {
+      showModal: false,
       filtroNombre: "",
-      filtroDireccion: "",
-      showModal: false
+      delivery: null
     }
+    this.handleNewDelivery = this.handleNewDelivery.bind(this);
     this.handleNombreChange = this.handleNombreChange.bind(this);
     this.handleDireccionChange = this.handleDireccionChange.bind(this);
-    this.closeModal = this.closeModal.bind(this);
-    this.openModal = this.openModal.bind(this);
   }
 
-  closeModal() {
-    this.setState({ showModal: false });
+  componentWillMount() {
+    this.props.listDeliveries();
   }
 
-  openModal() {
-    this.setState({ showModal: true });
+  componentWillReceiveProps(newProps){
+    if (newProps.delivery) {
+      this.setState({showModal: true});
+    }
+  }
+
+  handleNewDelivery() {
+    this.setState({showModal: true});
+    this.props.newDelivery();
   }
 
   handleNombreChange(e) {
@@ -44,6 +57,7 @@ class Deliveries extends Component {
 
   render() {
     let { deliveries } = this.props;
+    const { delivery } = this.props;
     const { filtroNombre, filtroDireccion } = this.state;
 
     if (filtroNombre) {
@@ -76,12 +90,20 @@ class Deliveries extends Component {
       }
     ];
 
+    const { showModal } = this.state;
+    const { selectDelivery } = this.props;
+    console.log(selectDelivery);
+
+    const deleteFunction = () => {
+      console.log('delete');
+    }
+
     return (
       <div>
         <PageHeader>
           Listado de deliveries
           <Button
-            onClick={this.openModal}
+            onClick={this.handleNewDelivery}
             bsStyle="primary"
             bsSize="sm"
             className="pull-right">
@@ -104,33 +126,13 @@ class Deliveries extends Component {
             </FormGroup>
           </Form>
         </Panel>
-        <Grilla data={deliveries} columns={columns}/>
 
-        <Modal show={this.state.showModal} onHide={this.closeModal}>
-          <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <h4>Text in a modal</h4>
-            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
+        <Grilla data={deliveries} columns={columns} editFunction={selectDelivery} deleteFunction={deleteFunction}/>
 
-            <hr />
+        {delivery &&
+          <FormDelivery delivery={delivery} showModal={showModal}/>
+        }
 
-            <h4>Overflowing text to show scroll behavior</h4>
-            <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
-            <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-            <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
-            <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-            <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
-            <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.closeModal}>Close</Button>
-          </Modal.Footer>
-        </Modal>
       </div>
     )
   }
@@ -138,8 +140,13 @@ class Deliveries extends Component {
 
 function mapStateToProps(state) {
   return {
-    deliveries: state.deliveries
+    deliveries: state.deliveries.deliveries,
+    delivery: state.deliveries.delivery
   };
 }
 
-export default connect(mapStateToProps)(Deliveries);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ listDeliveries: listDeliveries, selectDelivery: selectDelivery, newDelivery: newDelivery }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Deliveries);

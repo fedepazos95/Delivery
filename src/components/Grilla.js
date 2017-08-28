@@ -7,17 +7,14 @@ import { Table, ButtonToolbar, Button, Glyphicon } from 'react-bootstrap';
 
 export default class Grilla extends Component {
   static propTypes = {
+    editFunction: PropTypes.func.isRequired,
+    deleteFunction: PropTypes.func.isRequired,
     data: PropTypes.array.isRequired,
     columns: PropTypes.array //array<Obj>
   };
 
   getKeysFromObj(obj) {
-    return Object.keys(obj).filter((key) => {
-      // Filtra las propiedades que son objetos para simplificar la grilla
-      if (typeof obj[key] != "object") {
-        return key;
-      }
-    });
+    return Object.keys(obj);
   }
 
   renderColumns() {
@@ -43,16 +40,11 @@ export default class Grilla extends Component {
   }
 
   renderRows() {
+    const { editFunction, deleteFunction } = this.props;
     const getSingleRow = (key, values) => {
       return (
         <tr key={key}>
           {values}
-          <td>
-            <ButtonToolbar>
-              <Button bsStyle="primary" bsSize="xsmall"><Glyphicon glyph="pencil"/></Button>
-              <Button bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash"/></Button>
-            </ButtonToolbar>
-          </td>
         </tr>
       );
     }
@@ -64,6 +56,14 @@ export default class Grilla extends Component {
             <td key={obj[column.key]}>{obj[column.key]}</td>
           );
         });
+        values.push(
+          <td key={'actions-' + obj}>
+            <ButtonToolbar>
+              <Button bsStyle="primary" bsSize="xsmall" onClick={() => editFunction(obj)}><Glyphicon glyph="pencil"/></Button>
+              <Button bsStyle="danger" bsSize="xsmall" onClick={() => deleteFunction(obj)}><Glyphicon glyph="trash"/></Button>
+            </ButtonToolbar>
+          </td>
+        );
         return getSingleRow(obj[this.props.columns[0].key], values);
       });
     } else {
@@ -74,6 +74,14 @@ export default class Grilla extends Component {
             <td key={obj[key]}>{obj[key]}</td>
           );
         });
+        values.push(
+          <td key={'actions-' + obj}>
+            <ButtonToolbar>
+              <Button bsStyle="primary" bsSize="xsmall" onClick={() => editFunction(obj)}><Glyphicon glyph="pencil"/></Button>
+              <Button bsStyle="danger" bsSize="xsmall" onClick={() => deleteFunction(obj)}><Glyphicon glyph="trash"/></Button>
+            </ButtonToolbar>
+          </td>
+        );
         return getSingleRow(obj[keys[0]], values);
       });
     }
