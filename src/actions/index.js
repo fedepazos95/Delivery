@@ -48,6 +48,13 @@ export const selectDelivery = (delivery) => {
   };
 }
 
+export const unselectDelivery = () => {
+  return {
+    type: 'DELIVERY_UNSELECTED',
+    payload: {}
+  };
+}
+
 export const newDelivery = () => {
   return {
     type: 'NEW_DELIVERY',

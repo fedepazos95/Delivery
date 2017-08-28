@@ -17,6 +17,10 @@ export default function reducerDeliveries(state = initialState, action) {
       return Object.assign({}, state, {delivery: action.payload});
     }
 
+    case 'DELIVERY_UNSELECTED': {
+      return Object.assign({}, state, {delivery: {}});
+    }
+
     default:
       return state;
   }

@@ -1,7 +1,7 @@
 // Dependencies
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { saveDelivery } from '../actions/index';
+import { saveDelivery, unselectDelivery } from '../actions/index';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -17,12 +17,12 @@ import { getDeliverySchema, getValidDeliverySchema, getInputsRestrictions } from
 class FormDelivery extends Component {
   static propTypes = {
     delivery: PropTypes.object.isRequired,
-    showModal: PropTypes.bool.isRequired
+    showModal: PropTypes.bool
   }
   constructor(props) {
     super(props);
     this.state = {
-      title: 'Nuevo Delivery',
+      title: '',
       showModal: false,
       formValid: false,
       delivery: getDeliverySchema(),
@@ -37,25 +37,42 @@ class FormDelivery extends Component {
   }
 
   componentWillMount() {
+    console.log('will mount');
     this.setState({showModal: true});
     if (Object.keys(this.props.delivery).length > 0) {
-      this.setState({delivery: this.props.delivery});
+      this.setFormToEdit(this.props.delivery);
     } else {
-      this.setState({delivery: getDeliverySchema()});
+      this.setFormToNew();
     }
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState({showModal: newProps.showModal, formValid: false});
+    console.log('will receive props', newProps);
+    console.log(this.state);
+    this.setState({showModal: true, formValid: false});
     if (Object.keys(newProps.delivery).length > 0) {
-      this.setState({title: 'Edición Delivery', delivery: newProps.delivery, formValid: true});
+      this.setFormToEdit(newProps.delivery);
     } else {
-      this.setState({title: 'Nuevo Delivery', delivery: getDeliverySchema()});
+      this.setState({showModal: false});
+      this.setFormToNew();
     }
+  }
+
+  setFormToEdit(delivery) {
+    let { validSchema } = this.state;
+    Object.keys(validSchema).map((fieldName) => {
+      validSchema[fieldName] = true;
+    });
+    this.setState({formValid: true, validSchema: validSchema, title: 'Edición Delivery', delivery: delivery});
+  }
+
+  setFormToNew() {
+    this.setState({title: 'Nuevo Delivery', delivery: getDeliverySchema()});
   }
 
   closeModal() {
     this.setState({ showModal: false });
+    this.props.unselectDelivery(this.props.delivery);
   }
 
   getValidationState(prop, limit) {
@@ -66,7 +83,6 @@ class FormDelivery extends Component {
   }
 
   handleSaveClick() {
-    console.log(this.state.formValid);
     if (this.state.formValid) {
       this.props.saveDelivery(this.state.delivery);
     } else {
@@ -87,9 +103,18 @@ class FormDelivery extends Component {
     let validSchema = this.state.validSchema;
 
     switch(fieldName) {
+      case 'especialidades':
+        if (value) {
+          validSchema[fieldName] = value.length <= inputsRestrictions[fieldName];
+        }
+        break;
       default:
-        validSchema[fieldName] = value.length <= inputsRestrictions.nombre;
-        fieldValidationErrors[fieldName] = validSchema[fieldName] ? '' : 'es demasiado largo.';
+        if (value) {
+          validSchema[fieldName] = value.length <= inputsRestrictions[fieldName];
+          fieldValidationErrors[fieldName] = validSchema[fieldName] ? '' : 'es demasiado largo.';
+        } else {
+          validSchema[fieldName] = false;
+        }
         break;
     }
     this.setState({formErrors: fieldValidationErrors, validSchema: validSchema}, this.validateForm);
@@ -101,16 +126,13 @@ class FormDelivery extends Component {
     Object.keys(validSchema).map((fieldName) => {
       if (!validSchema[fieldName]) {
         isValid = false;
-      } else {
-        isValid = true;
       }
     });
     this.setState({formValid: isValid});
   }
 
   render() {
-    console.log(this.state.formValid);
-    const { delivery, title, inputsRestrictions } = this.state;
+    const { delivery, title, inputsRestrictions, formValid } = this.state;
 
     return (
       <div>
@@ -203,7 +225,7 @@ class FormDelivery extends Component {
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeModal}>Cerrar</Button>
-            <Button bsStyle="success" onClick={this.handleSaveClick}>Guardar</Button>
+            <Button bsStyle="success" onClick={this.handleSaveClick} disabled={!formValid}>Guardar</Button>
           </Modal.Footer>
         </Modal>
       </div>
@@ -218,7 +240,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ saveDelivery: saveDelivery }, dispatch);
+  return bindActionCreators({ saveDelivery: saveDelivery, unselectDelivery: unselectDelivery }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(FormDelivery);

@@ -92,7 +92,6 @@ class Deliveries extends Component {
 
     const { showModal } = this.state;
     const { selectDelivery } = this.props;
-    console.log(selectDelivery);
 
     const deleteFunction = () => {
       console.log('delete');
@@ -129,9 +128,7 @@ class Deliveries extends Component {
 
         <Grilla data={deliveries} columns={columns} editFunction={selectDelivery} deleteFunction={deleteFunction}/>
 
-        {delivery &&
-          <FormDelivery delivery={delivery} showModal={showModal}/>
-        }
+        {delivery ? <FormDelivery delivery={delivery}/> : null}
 
       </div>
     )

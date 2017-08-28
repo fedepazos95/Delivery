@@ -17,10 +17,12 @@ export const getDeliverySchema = () => {
 }
 
 export const getValidDeliverySchema = () => {
+  // Si es un campo requerido se inicializa en false.
   return {
     nombre: false,
     telefono: false,
     descripcion: false,
+    especialidades: true,
     direccion: false,
     admNombre: false,
     admApellido: false,
@@ -34,6 +36,7 @@ export const getValidDeliverySchema = () => {
 }
 
 export const getInputsRestrictions = () => {
+  // Permite configurar los limites de caracteres de forma global.
   return {
     nombre: 50,
     telefono: 50,
