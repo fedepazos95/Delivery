@@ -18,7 +18,32 @@ export default function reducerDeliveries(state = initialState, action) {
     }
 
     case 'DELIVERY_UNSELECTED': {
-      return Object.assign({}, state, {delivery: {}});
+      return Object.assign({}, state, {delivery: ''});
+    }
+
+    case 'SAVE_DELIVERY': {
+      const prevDeliveries = state.deliveries;
+      const updatedDeliveries = [ ...prevDeliveries, action.payload ];
+      return Object.assign({}, state, {deliveries: updatedDeliveries, delivery: ''});
+    }
+
+    case 'UPDATE_DELIVERY': {
+      const updatedDeliveries = state.deliveries.map((delivery) => {
+        if (delivery.id === action.payload.id) {
+          return { ...delivery, ...action.payload};
+        }
+        return delivery;
+      });
+      return Object.assign({}, state, {deliveries: updatedDeliveries, delivery: ''});
+    }
+
+    case 'DELETE_DELIVERY': {
+      const updatedDeliveries = state.deliveries.filter((delivery) => {
+        if (delivery.id != action.payload.id)  {
+          return delivery;
+        }
+      });
+      return Object.assign({}, state, {deliveries: updatedDeliveries, delivery: ''});
     }
 
     default:

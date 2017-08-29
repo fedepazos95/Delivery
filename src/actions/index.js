@@ -1,6 +1,7 @@
 // Data
 const deliveries = [
   {
+    id: 1,
     nombre: "Argentino",
     descripcion: "Argentino casa de comidas",
     especialidades: "Pizzas y empanadas",
@@ -17,6 +18,7 @@ const deliveries = [
     cmEmail: "raul.gonzalez@hotmail.com"
   },
   {
+    id: 2,
     nombre: "Bar BQ",
     descripcion: "Bar BQ bebidas y tragos",
     especialidades: "Coctails y bebidas",
@@ -38,7 +40,7 @@ export const listDeliveries = () => {
   return {
     type: 'LIST_DELIVERIES',
     payload: deliveries
-  }
+  };
 }
 
 export const selectDelivery = (delivery) => {
@@ -59,13 +61,28 @@ export const newDelivery = () => {
   return {
     type: 'NEW_DELIVERY',
     payload: {}
-  }
+  };
 }
 
 export const saveDelivery = (delivery) => {
-  console.log('save', delivery);
+  // Asigna un ID aleatorio simulando el ingreso de registros nuevos a una base de datos
+  delivery['id'] = Math.floor((Math.random() * 1000) + 1);
   return {
     type: 'SAVE_DELIVERY',
     payload: delivery
-  }
+  };
+}
+
+export const updateDelivery = (delivery) => {
+  return {
+    type: 'UPDATE_DELIVERY',
+    payload: delivery
+  };
+}
+
+export const deleteDelivery = (delivery) => {
+  return {
+    type: 'DELETE_DELIVERY',
+    payload: delivery
+  };
 }

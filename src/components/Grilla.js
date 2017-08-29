@@ -13,10 +13,6 @@ export default class Grilla extends Component {
     columns: PropTypes.array //array<Obj>
   };
 
-  getKeysFromObj(obj) {
-    return Object.keys(obj);
-  }
-
   renderColumns() {
     if (this.props.columns) {
       return this.props.columns.map((column) => {
@@ -28,8 +24,7 @@ export default class Grilla extends Component {
       });
     } else {
       //Por defecto toma el primer objeto del array y obtiene sus keys para usarlas como nombre de las columnas
-      const keys = this.getKeysFromObj(this.props.data[0]);
-      return keys.map((property) => {
+      return Object.keys(this.props.data[0]).map((property) => {
         return (
           <th key={property}>
             {property}
@@ -39,65 +34,44 @@ export default class Grilla extends Component {
     }
   }
 
-  renderRows() {
+  renderRows(columns) {
     const { editFunction, deleteFunction } = this.props;
-    const getSingleRow = (key, values) => {
+
+    return this.props.data.map((delivery, key) => {
+      const values = columns.map((column, key) => {
+        return (
+          <td key={key}>{delivery[column.key]}</td>
+        );
+      });
+      values.push(
+        <td key={'actions-' + delivery}>
+          <ButtonToolbar>
+            <Button bsStyle="primary" bsSize="xsmall" onClick={() => editFunction(delivery)}><Glyphicon glyph="pencil"/></Button>
+            <Button bsStyle="danger" bsSize="xsmall" onClick={() => deleteFunction(delivery)}><Glyphicon glyph="trash"/></Button>
+          </ButtonToolbar>
+        </td>
+      );
       return (
         <tr key={key}>
           {values}
         </tr>
-      );
-    }
-
-    if (this.props.columns) {
-      return this.props.data.map((obj) => {
-        const values = this.props.columns.map((column) => {
-          return (
-            <td key={obj[column.key]}>{obj[column.key]}</td>
-          );
-        });
-        values.push(
-          <td key={'actions-' + obj}>
-            <ButtonToolbar>
-              <Button bsStyle="primary" bsSize="xsmall" onClick={() => editFunction(obj)}><Glyphicon glyph="pencil"/></Button>
-              <Button bsStyle="danger" bsSize="xsmall" onClick={() => deleteFunction(obj)}><Glyphicon glyph="trash"/></Button>
-            </ButtonToolbar>
-          </td>
-        );
-        return getSingleRow(obj[this.props.columns[0].key], values);
-      });
-    } else {
-      return this.props.data.map((obj) => {
-        const keys = this.getKeysFromObj(obj);
-        const values = keys.map((key) => {
-          return (
-            <td key={obj[key]}>{obj[key]}</td>
-          );
-        });
-        values.push(
-          <td key={'actions-' + obj}>
-            <ButtonToolbar>
-              <Button bsStyle="primary" bsSize="xsmall" onClick={() => editFunction(obj)}><Glyphicon glyph="pencil"/></Button>
-              <Button bsStyle="danger" bsSize="xsmall" onClick={() => deleteFunction(obj)}><Glyphicon glyph="trash"/></Button>
-            </ButtonToolbar>
-          </td>
-        );
-        return getSingleRow(obj[keys[0]], values);
-      });
-    }
+      )
+    })
   }
 
   render() {
+    const columns = this.renderColumns();
+
     return (
       <Table striped bordered condensed hover responsive>
         <thead>
           <tr>
-            {this.renderColumns()}
+            {columns}
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          {this.renderRows()}
+          {this.renderRows(columns)}
         </tbody>
       </Table>
     );

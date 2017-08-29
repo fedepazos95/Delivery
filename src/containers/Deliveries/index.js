@@ -2,11 +2,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { listDeliveries, selectDelivery, newDelivery } from '../../actions/index';
+import { listDeliveries, selectDelivery, newDelivery, deleteDelivery } from '../../actions/index';
 import { bindActionCreators } from 'redux';
 
 // React Bootstrap Components
-import { PageHeader, Panel, Glyphicon, Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
+import { Modal, PageHeader, Panel, Glyphicon, Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
 
 // Components
 import Grilla from '../../components/Grilla';
@@ -21,12 +21,17 @@ class Deliveries extends Component {
     super(props);
     this.state = {
       showModal: false,
+      showModalDelete: false,
       filtroNombre: "",
       delivery: null
     }
+    this.handleDeleteDelivery = this.handleDeleteDelivery.bind(this);
     this.handleNewDelivery = this.handleNewDelivery.bind(this);
-    this.handleNombreChange = this.handleNombreChange.bind(this);
-    this.handleDireccionChange = this.handleDireccionChange.bind(this);
+    this.handleDeleteDelivery = this.handleDeleteDelivery.bind(this);
+    this.handleFiltroNombreChange = this.handleFiltroNombreChange.bind(this);
+    this.handleFiltroDireccionChange = this.handleFiltroDireccionChange.bind(this);
+    this.confirmDelete = this.confirmDelete.bind(this);
+    this.closeDeleteModal = this.closeDeleteModal.bind(this);
   }
 
   componentWillMount() {
@@ -44,21 +49,39 @@ class Deliveries extends Component {
     this.props.newDelivery();
   }
 
-  handleNombreChange(e) {
+  handleDeleteDelivery(delivery) {
+    this.setState({delivery: delivery, showModalDelete: true});
+  }
+
+  handleFiltroNombreChange(e) {
     this.setState({
       filtroNombre: e.target.value
     })
   }
-  handleDireccionChange(e) {
+
+  handleFiltroDireccionChange(e) {
     this.setState({
       filtroDireccion: e.target.value
     })
   }
 
+  confirmDelete(){
+    this.setState({showModalDelete: false});
+    this.props.deleteDelivery(this.state.delivery);
+  }
+
+  closeDeleteModal() {
+    this.setState({showModalDelete: false});
+  }
+
   render() {
     let { deliveries } = this.props;
-    const { delivery } = this.props;
-    const { filtroNombre, filtroDireccion } = this.state;
+    const { delivery, selectDelivery, deleteDelivery } = this.props;
+    const { filtroNombre, filtroDireccion, showModal } = this.state;
+
+    if (!deliveries.length) {
+      return null;
+    }
 
     if (filtroNombre) {
       deliveries = deliveries.filter((delivery) => {
@@ -75,27 +98,7 @@ class Deliveries extends Component {
       });
     }
 
-    const columns = [
-      {
-        title: "Nombre",
-        key: "nombre"
-      },
-      {
-        title: "Direccion",
-        key: "direccion"
-      },
-      {
-        title: "Telefono",
-        key: "telefono"
-      }
-    ];
-
-    const { showModal } = this.state;
-    const { selectDelivery } = this.props;
-
-    const deleteFunction = () => {
-      console.log('delete');
-    }
+    const columns = [{ title: "Nombre", key: "nombre" },{ title: "Direccion", key: "direccion" },{ title: "Telefono", key: "telefono" }];
 
     return (
       <div>
@@ -117,18 +120,28 @@ class Deliveries extends Component {
           <Form inline>
             <FormGroup>
               <ControlLabel>Nombre: </ControlLabel>
-              <FormControl value={this.state.filtroNombre} type="text" placeholder="Parilla" onChange={this.handleNombreChange}/>
+              <FormControl value={this.state.filtroNombre} type="text" placeholder="Parilla" onChange={this.handleFiltroNombreChange}/>
             </FormGroup>
             <FormGroup>
               <ControlLabel>Direccion: </ControlLabel>
-              <FormControl value={this.state.filtroDireccion} type="text" placeholder="Calle" onChange={this.handleDireccionChange}/>
+              <FormControl value={this.state.filtroDireccion} type="text" placeholder="Calle" onChange={this.handleFiltroDireccionChange}/>
             </FormGroup>
           </Form>
         </Panel>
 
-        <Grilla data={deliveries} columns={columns} editFunction={selectDelivery} deleteFunction={deleteFunction}/>
+        <Grilla data={deliveries} columns={columns} editFunction={selectDelivery} deleteFunction={this.handleDeleteDelivery}/>
 
         {delivery ? <FormDelivery delivery={delivery}/> : null}
+
+        <Modal bsSize="sm" show={this.state.showModalDelete} onHide={this.closeDeleteModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirmar</Modal.Title>
+          </Modal.Header>
+          <Modal.Footer>
+            <Button onClick={this.closeDeleteModal}>Cancelar</Button>
+            <Button bsStyle="danger" onClick={this.confirmDelete}>Eliminar</Button>
+          </Modal.Footer>
+        </Modal>
 
       </div>
     )
@@ -143,7 +156,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ listDeliveries: listDeliveries, selectDelivery: selectDelivery, newDelivery: newDelivery }, dispatch);
+  return bindActionCreators({ listDeliveries: listDeliveries, selectDelivery: selectDelivery, newDelivery: newDelivery, deleteDelivery: deleteDelivery }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Deliveries);
