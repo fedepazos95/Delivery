@@ -30,6 +30,7 @@ class Deliveries extends Component {
     this.handleDeleteDelivery = this.handleDeleteDelivery.bind(this);
     this.handleFiltroNombreChange = this.handleFiltroNombreChange.bind(this);
     this.handleFiltroDireccionChange = this.handleFiltroDireccionChange.bind(this);
+    this.compareFunction = this.compareFunction.bind(this);
     this.confirmDelete = this.confirmDelete.bind(this);
     this.closeDeleteModal = this.closeDeleteModal.bind(this);
   }
@@ -65,6 +66,15 @@ class Deliveries extends Component {
     })
   }
 
+  compareFunction(column) {
+    if (column.ordenable) {
+      const deliveries = this.props.deliveries.sort(function(a, b) {
+         return a[column.key].localeCompare(b[column.key]);
+      });
+      this.setState({deliveries: deliveries});
+    }
+  }
+
   confirmDelete(){
     this.setState({showModalDelete: false});
     this.props.deleteDelivery(this.state.delivery);
@@ -98,7 +108,7 @@ class Deliveries extends Component {
       });
     }
 
-    const columns = [{ title: "Nombre", key: "nombre" },{ title: "Direccion", key: "direccion" },{ title: "Telefono", key: "telefono" }];
+    const columns = [{ title: "Nombre", key: "nombre", ordenable: true },{ title: "Direccion", key: "direccion", ordenable: true },{ title: "Telefono", key: "telefono", ordenable: true }];
 
     return (
       <div>
@@ -129,7 +139,7 @@ class Deliveries extends Component {
           </Form>
         </Panel>
 
-        <Grilla data={deliveries} columns={columns} editFunction={selectDelivery} deleteFunction={this.handleDeleteDelivery}/>
+        <Grilla data={deliveries} columns={columns} editFunction={selectDelivery} deleteFunction={this.handleDeleteDelivery} orderBy={this.compareFunction}/>
 
         {delivery ? <FormDelivery delivery={delivery}/> : null}
 

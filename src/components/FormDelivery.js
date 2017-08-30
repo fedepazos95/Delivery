@@ -72,17 +72,17 @@ class FormDelivery extends Component {
 
   handleSaveClick() {
     this.setState({ showModal: false });
+    if (this.state.checkboxIdem) {
+      const { delivery } = this.state;
+      delivery.cmNombre = delivery.admNombre;
+      delivery.cmApellido = delivery.admApellido;
+      delivery.cmTelefono = delivery.admTelefono;
+      delivery.cmEmail = delivery.admEmail;
+      this.setState({delivery: delivery});
+    }
     if (this.state.isEditing) {
       this.props.updateDelivery(this.state.delivery);
     } else {
-      if (this.state.checkboxIdem) {
-        const { delivery } = this.state;
-        delivery.cmNombre = delivery.admNombre;
-        delivery.cmApellido = delivery.admApellido;
-        delivery.cmTelefono = delivery.admTelefono;
-        delivery.cmEmail = delivery.admEmail;
-        this.setState({delivery: delivery});
-      }
       this.props.saveDelivery(this.state.delivery);
     }
   }

@@ -17,7 +17,7 @@ export default class Grilla extends Component {
     if (this.props.columns) {
       return this.props.columns.map((column) => {
         return (
-          <th key={column.key}>
+          <th key={column.key} onClick={() => this.props.orderBy(column)} style={{"cursor": "pointer"}}>
             {column.title}
           </th>
         );
@@ -26,7 +26,7 @@ export default class Grilla extends Component {
       //Por defecto toma el primer objeto del array y obtiene sus keys para usarlas como nombre de las columnas
       return Object.keys(this.props.data[0]).map((property) => {
         return (
-          <th key={property}>
+          <th key={property} onClick={() => this.props.orderBy(column)}>
             {property}
           </th>
         );
