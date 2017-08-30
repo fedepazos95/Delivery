@@ -10,7 +10,7 @@
     "test:watch": "npm run test -- --watch"
   },
   "author": "",
-  "license": "ISC",
+  "license": "",
   "devDependencies": {
     "babel-core": "^6.2.1",
     "babel-loader": "^6.2.0",
@@ -28,6 +28,7 @@
   "dependencies": {
     "babel-preset-stage-1": "^6.1.18",
     "lodash": "^3.10.1",
+    "moment": "^2.18.1",
     "prop-types": "^15.5.10",
     "react": "^0.14.3",
     "react-bootstrap": "^0.31.2",

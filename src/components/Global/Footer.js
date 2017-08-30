@@ -12,8 +12,8 @@ const styles = {
 export default class Footer extends Component {
   render () {
     return (
-      <div style={styles.footer}>
-        <p>Delivery App</p>
+      <div className="footer">
+        <p>Delivery App Footer.</p>
       </div>
     )
   }

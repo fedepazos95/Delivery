@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 // React Bootstrap Components
-import { Modal, PageHeader, Col, FormGroup, FormControl, ControlLabel, Form, FieldGroup, Checkbox, Button, HelpBlock } from 'react-bootstrap';
+import { Modal, PageHeader, Col, Glyphicon, InputGroup, FormGroup, FormControl, ControlLabel, Form, FieldGroup, Checkbox, Button, HelpBlock } from 'react-bootstrap';
 
 // Schemas
 import { getDeliverySchema, getValidDeliverySchema, getInputsRestrictions } from '../schemas/index';
@@ -15,6 +15,7 @@ class FormDelivery extends Component {
   static propTypes = {
     delivery: PropTypes.object.isRequired
   }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -28,6 +29,7 @@ class FormDelivery extends Component {
       inputsRestrictions: getInputsRestrictions()
     }
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleHorarioChange = this.handleHorarioChange.bind(this);
     this.handleSaveClick = this.handleSaveClick.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -36,6 +38,7 @@ class FormDelivery extends Component {
 
   componentWillMount() {
     this.setState({showModal: true});
+    // Chequeo si está editando un registro o creando uno nuevo
     if (Object.keys(this.props.delivery).length > 0) {
       this.setFormToEdit(this.props.delivery);
     } else {
@@ -45,9 +48,11 @@ class FormDelivery extends Component {
 
   componentWillReceiveProps(newProps) {
     this.setState({showModal: true, formValid: false});
+    // Si llega un delivery es porque esta editando
     if (Object.keys(newProps.delivery).length > 0) {
       this.setFormToEdit(newProps.delivery);
     } else {
+      // Si no llego un delivery, cierro el modal y reinicio el formulario
       this.setState({showModal: false});
       this.setFormToNew();
     }
@@ -56,6 +61,7 @@ class FormDelivery extends Component {
   setFormToEdit(delivery) {
     let { validSchema } = this.state;
     Object.keys(validSchema).map((fieldName) => {
+      // Si estoy editando un registro ya guardado, la validacion se setea en true
       validSchema[fieldName] = true;
     });
     this.setState({isEditing: true, formValid: true, validSchema: validSchema, title: 'Edición Delivery', delivery: delivery});
@@ -73,6 +79,7 @@ class FormDelivery extends Component {
   handleSaveClick() {
     this.setState({ showModal: false });
     if (this.state.checkboxIdem) {
+      // Si el checkbox "idem contacto" esta tildado, copio la informacion del contacto administrativo al contacto comercial
       const { delivery } = this.state;
       delivery.cmNombre = delivery.admNombre;
       delivery.cmApellido = delivery.admApellido;
@@ -100,6 +107,21 @@ class FormDelivery extends Component {
     this.setState({delivery}, () => this.validateField(name, value));
   }
 
+  handleHorarioChange(event) {
+    const { name, value } = event.target;
+    const { delivery } = this.state;
+    if (value < 1) {
+      // Si es menor a 1 lo seteo en 1 para no permitir horario negativo
+      delivery[name] = 1;
+    } else if (value > 24) {
+      // Si es mayor a 24 lo seteo en 24 porque me baso en el formato 24hs
+      delivery[name] = 24;
+    } else {
+      delivery[name] = value;
+    }
+    this.setState({delivery}, ()=>this.validateField(name, value));
+  }
+
   getValidationState(prop, limit) {
     const length = this.state.delivery[prop].length;
     if (!this.state.validSchema[prop] || length > limit) {
@@ -113,6 +135,12 @@ class FormDelivery extends Component {
     let validSchema = this.state.validSchema;
 
     switch(fieldName) {
+      case 'horarioInicio':
+        validSchema[fieldName] = value.match(/^[\d\s]+$/g);
+        break;
+      case 'horarioFin':
+        validSchema[fieldName] = value.match(/^[\d\s]+$/g);
+        break;
       case 'admEmail':
         validSchema[fieldName] = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
         break;
@@ -187,6 +215,23 @@ class FormDelivery extends Component {
                 <ControlLabel>Dirección {(this.state.validSchema.direccion) ? '' : '*'}</ControlLabel>
                 <FormControl name="direccion" type="text" value={delivery.direccion} onChange={this.handleInputChange}/>
                 <FormControl.Feedback />
+              </FormGroup>
+
+              <FormGroup controlId="formHorario" validationState={(!this.state.validSchema.horarioInicio && !this.state.validSchema.horarioFin) ? "error" : null}>
+                <ControlLabel>Horario de atención {(this.state.validSchema.horarioInicio && this.state.validSchema.horarioFin) ? '' : '*'}</ControlLabel>
+                <FormGroup>
+                  <InputGroup style={{"width": 30+'%'}}>
+                    <FormControl name="horarioInicio" type="number" value={delivery.horarioInicio} onChange={this.handleHorarioChange}/>
+                    <FormControl.Feedback />
+                    <InputGroup.Addon>
+                      <Glyphicon glyph="time" />
+                    </InputGroup.Addon>
+                    <FormControl name="horarioFin" type="number" value={delivery.horarioFin} onChange={this.handleHorarioChange}/>
+                    <InputGroup.Addon>
+                      <Glyphicon glyph="time" />
+                    </InputGroup.Addon>
+                  </InputGroup>
+                </FormGroup>
               </FormGroup>
 
               <Col sm={6}>

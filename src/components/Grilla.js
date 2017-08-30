@@ -7,17 +7,20 @@ import { Table, ButtonToolbar, Button, Glyphicon } from 'react-bootstrap';
 
 export default class Grilla extends Component {
   static propTypes = {
-    editFunction: PropTypes.func.isRequired,
-    deleteFunction: PropTypes.func.isRequired,
     data: PropTypes.array.isRequired,
-    columns: PropTypes.array //array<Obj>
+    columns: PropTypes.array, //array<Obj>
+    widthPercent: PropTypes.number, //Porcentaje para definir tamaño
+    editFunction: PropTypes.func,
+    deleteFunction: PropTypes.func,
+    orderBy: PropTypes.func
   };
 
   renderColumns() {
     if (this.props.columns) {
+      // Llego con un array de columnas definido
       return this.props.columns.map((column) => {
         return (
-          <th key={column.key} onClick={() => this.props.orderBy(column)} style={{"cursor": "pointer"}}>
+          <th key={column.key} onClick={() => this.props.orderBy(column)} className="cursor-pointer">
             {column.title}
           </th>
         );
@@ -43,11 +46,12 @@ export default class Grilla extends Component {
           <td key={key}>{delivery[column.key]}</td>
         );
       });
+      // Luego de generar automaticamente cada campo de la fila, agrego los botones de acciones
       values.push(
         <td key={'actions-' + delivery}>
           <ButtonToolbar>
-            <Button bsStyle="primary" bsSize="xsmall" onClick={() => editFunction(delivery)}><Glyphicon glyph="pencil"/></Button>
-            <Button bsStyle="danger" bsSize="xsmall" onClick={() => deleteFunction(delivery)}><Glyphicon glyph="trash"/></Button>
+            {editFunction ? <Button bsStyle="primary" bsSize="xsmall" onClick={() => editFunction(delivery)}><Glyphicon glyph="pencil"/></Button> : null}
+            {deleteFunction ? <Button bsStyle="danger" bsSize="xsmall" onClick={() => deleteFunction(delivery)}><Glyphicon glyph="trash"/></Button> : null}
           </ButtonToolbar>
         </td>
       );
@@ -60,14 +64,15 @@ export default class Grilla extends Component {
   }
 
   render() {
+    const { widthPercent, editFunction, deleteFunction } = this.props;
     const columns = this.renderColumns();
 
     return (
-      <Table striped bordered condensed hover responsive>
+      <Table striped bordered condensed hover responsive style={{"width": widthPercent+"%"}}>
         <thead>
           <tr>
             {columns}
-            <th>Acciones</th>
+            {editFunction && deleteFunction ? <th>Acciones</th> : null}
           </tr>
         </thead>
         <tbody>

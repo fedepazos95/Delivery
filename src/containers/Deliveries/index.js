@@ -40,6 +40,7 @@ class Deliveries extends Component {
   }
 
   componentWillReceiveProps(newProps){
+    // Si recibe como prop un objeto delivery quiere decir que esta creando o editando un delivery
     if (newProps.delivery) {
       this.setState({showModal: true});
     }
@@ -90,17 +91,20 @@ class Deliveries extends Component {
     const { filtroNombre, filtroDireccion, showModal } = this.state;
 
     if (!deliveries.length) {
+      // Si no tengo deliveries no renderizo la tabla
       return null;
     }
 
     if (filtroNombre) {
       deliveries = deliveries.filter((delivery) => {
+        // Se fija si el valor de 'filtroNombre' coincide con el nombre
         if (delivery.nombre.toLowerCase().indexOf(filtroNombre) > -1) {
           return true;
         }
       });
     }
     if (filtroDireccion) {
+      // Se fija si el valor de 'filtroDireccion' coincide con la direccion
       deliveries = deliveries.filter((delivery) => {
         if (delivery.direccion.toLowerCase().indexOf(filtroDireccion) > -1) {
           return true;
@@ -108,6 +112,7 @@ class Deliveries extends Component {
       });
     }
 
+    // Columnas predefinidas para enviar como prop en el componente Grilla
     const columns = [{ title: "Nombre", key: "nombre", ordenable: true },{ title: "Direccion", key: "direccion", ordenable: true },{ title: "Telefono", key: "telefono", ordenable: true }];
 
     return (
@@ -139,7 +144,7 @@ class Deliveries extends Component {
           </Form>
         </Panel>
 
-        <Grilla data={deliveries} columns={columns} editFunction={selectDelivery} deleteFunction={this.handleDeleteDelivery} orderBy={this.compareFunction}/>
+        <Grilla data={deliveries} columns={columns} widthPercent={100} editFunction={selectDelivery} deleteFunction={this.handleDeleteDelivery} orderBy={this.compareFunction}/>
 
         {delivery ? <FormDelivery delivery={delivery}/> : null}
 

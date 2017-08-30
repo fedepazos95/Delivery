@@ -1,4 +1,4 @@
-// Data
+// Data para iniciar la app con info
 const deliveries = [
   {
     id: 1,
@@ -6,7 +6,8 @@ const deliveries = [
     descripcion: "Argentino casa de comidas",
     especialidades: "Pizzas y empanadas",
     direccion: "Calle 20",
-    horario: "",
+    horarioInicio: 9,
+    horarioFin: 23,
     telefono: "48196084",
     admNombre: "Juan",
     admApellido: "Perez",
@@ -23,7 +24,8 @@ const deliveries = [
     descripcion: "Bar BQ bebidas y tragos",
     especialidades: "Coctails y bebidas",
     direccion: "Calle 524",
-    horario: "",
+    horarioInicio: 7,
+    horarioFin: 20,
     telefono: "40849562",
     admNombre: "Juan",
     admApellido: "Perez",
