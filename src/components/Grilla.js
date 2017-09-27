@@ -40,18 +40,18 @@ export default class Grilla extends Component {
   renderRows(columns) {
     const { editFunction, deleteFunction } = this.props;
 
-    return this.props.data.map((delivery, key) => {
+    return this.props.data.map((obj, key) => {
       const values = columns.map((column, key) => {
         return (
-          <td key={key}>{delivery[column.key]}</td>
+          <td key={key}>{obj[column.key]}</td>
         );
       });
       // Luego de generar automaticamente cada campo de la fila, agrego los botones de acciones
       values.push(
-        <td key={'actions-' + delivery}>
+        <td key={'actions-' + obj}>
           <ButtonToolbar>
-            {editFunction ? <Button bsStyle="primary" bsSize="xsmall" onClick={() => editFunction(delivery)}><Glyphicon glyph="pencil"/></Button> : null}
-            {deleteFunction ? <Button bsStyle="danger" bsSize="xsmall" onClick={() => deleteFunction(delivery)}><Glyphicon glyph="trash"/></Button> : null}
+            {editFunction ? <Button bsStyle="primary" bsSize="xsmall" onClick={() => editFunction(obj)}><Glyphicon glyph="pencil"/></Button> : null}
+            {deleteFunction ? <Button bsStyle="danger" bsSize="xsmall" onClick={() => deleteFunction(obj)}><Glyphicon glyph="trash"/></Button> : null}
           </ButtonToolbar>
         </td>
       );
