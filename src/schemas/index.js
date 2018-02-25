@@ -1,61 +1,61 @@
 export const getDeliverySchema = () => {
   return {
-    nombre: '',
-    telefono: '',
-    descripcion: '',
-    especialidades: '',
-    direccion: '',
-    horarioInicio: '',
-    horarioFin: '',
-    admNombre: '',
-    admApellido: '',
-    admTelefono: '',
+    name: '',
+    phone: '',
+    description: '',
+    specialties: '',
+    direction: '',
+    startTime: '',
+    endTime: '',
+    admName: '',
+    admSurname: '',
+    admPhone: '',
     admEmail: '',
-    cmNombre: '',
-    cmApellido: '',
-    cmTelefono: '',
+    cmName: '',
+    cmSurname: '',
+    cmPhone: '',
     cmEmail: ''
   }
 }
 
 export const getValidDeliverySchema = () => {
-  // Si es un campo requerido se inicializa en false.
+  // If a field is required, it starts with false
   return {
-    nombre: false,
-    telefono: false,
-    descripcion: false,
-    especialidades: true,
-    direccion: false,
-    horarioInicio: false,
-    horarioFin: false,
-    admNombre: false,
-    admApellido: false,
-    admTelefono: false,
+    name: false,
+    phone: false,
+    description: false,
+    specialties: true,
+    direction: false,
+    startTime: false,
+    endTime: false,
+    admName: false,
+    admSurname: false,
+    admPhone: false,
     admEmail: false,
-    cmNombre: false,
-    cmApellido: false,
-    cmTelefono: false,
+    cmName: false,
+    cmSurname: false,
+    cmPhone: false,
     cmEmail: false
   }
 }
 
 export const getInputsRestrictions = () => {
-  // Permite configurar los limites de caracteres de forma global.
+  // It allows to set the char limits 
   return {
-    nombre: 50,
-    telefono: 50,
-    descripcion: 1000,
-    especialidades: 500,
-    direccion: 200,
-    horarioInicio: 24,
-    horarioFin: 24,
-    admNombre: 200,
-    admApellido: 200,
-    admTelefono: 100,
+    name: 50,
+    phone: 50,
+    description: 1000,
+    specialties: 500,
+    direction: 200,
+    startTime: 24,
+    endTime: 24,
+    admName: 200,
+    admSurname: 200,
+    admPhone: 100,
     admEmail: 100,
-    cmNombre: 200,
-    cmApellido: 200,
-    cmTelefono: 100,
+    cmName: 200,
+    cmSurname: 200,
+    cmPhone: 100,
     cmEmail: 100
   }
 }

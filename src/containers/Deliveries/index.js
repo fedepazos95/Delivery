@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import { Modal, PageHeader, Panel, Glyphicon, Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
 
 // Components
-import Grilla from '../../components/Grilla';
+import Grid from '../../components/Grid';
 import FormDelivery from '../../components/FormDelivery';
 
 class Deliveries extends Component {
@@ -22,25 +22,25 @@ class Deliveries extends Component {
     this.state = {
       showModal: false,
       showModalDelete: false,
-      filtroNombre: "",
+      filterName: "",
+      filterDirection: "",
       delivery: null
     }
     this.handleDeleteDelivery = this.handleDeleteDelivery.bind(this);
     this.handleNewDelivery = this.handleNewDelivery.bind(this);
     this.handleDeleteDelivery = this.handleDeleteDelivery.bind(this);
-    this.handleFiltroNombreChange = this.handleFiltroNombreChange.bind(this);
-    this.handleFiltroDireccionChange = this.handleFiltroDireccionChange.bind(this);
+    this.handleFilterChange = this.handleFilterChange.bind(this);
     this.compareFunction = this.compareFunction.bind(this);
     this.confirmDelete = this.confirmDelete.bind(this);
     this.closeDeleteModal = this.closeDeleteModal.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.listDeliveries();
   }
 
   componentWillReceiveProps(newProps){
-    // Si recibe como prop un objeto delivery quiere decir que esta creando o editando un delivery
+    // If newProps have a delivery object it means that is editing or creating a delivery
     if (newProps.delivery) {
       this.setState({showModal: true});
     }
@@ -55,15 +55,9 @@ class Deliveries extends Component {
     this.setState({delivery: delivery, showModalDelete: true});
   }
 
-  handleFiltroNombreChange(e) {
+  handleFilterChange(e) {
     this.setState({
-      filtroNombre: e.target.value
-    })
-  }
-
-  handleFiltroDireccionChange(e) {
-    this.setState({
-      filtroDireccion: e.target.value
+      [e.target.name]: e.target.value
     })
   }
 
@@ -88,73 +82,66 @@ class Deliveries extends Component {
   render() {
     let { deliveries } = this.props;
     const { delivery, selectDelivery, deleteDelivery } = this.props;
-    const { filtroNombre, filtroDireccion, showModal } = this.state;
+    const { filterName, filterDirection, showModal } = this.state;
 
-    if (!deliveries.length) {
-      // Si no tengo deliveries no renderizo la tabla
-      return null;
-    }
-
-    if (filtroNombre) {
+    if (filterName) {
       deliveries = deliveries.filter((delivery) => {
-        // Se fija si el valor de 'filtroNombre' coincide con el nombre
-        if (delivery.nombre.toLowerCase().indexOf(filtroNombre) > -1) {
+        if (delivery.name.toLowerCase().indexOf(filterName) > -1) {
           return true;
         }
       });
     }
-    if (filtroDireccion) {
-      // Se fija si el valor de 'filtroDireccion' coincide con la direccion
+    if (filterDirection) {
       deliveries = deliveries.filter((delivery) => {
-        if (delivery.direccion.toLowerCase().indexOf(filtroDireccion) > -1) {
+        if (delivery.direction.toLowerCase().indexOf(filterDirection) > -1) {
           return true;
         }
       });
     }
 
-    // Columnas predefinidas para enviar como prop en el componente Grilla
-    const columns = [{ title: "Nombre", key: "nombre", ordenable: true },{ title: "Direccion", key: "direccion", ordenable: true },{ title: "Telefono", key: "telefono", ordenable: true }];
+    // Columns array to send as a prop for Grid.js
+    const columns = [{ title: "Name", key: "name", ordenable: true },{ title: "Direction", key: "direction", ordenable: true },{ title: "Phone", key: "phone", ordenable: true }];
 
     return (
       <div>
         <PageHeader>
-          Listado de deliveries
+          Deliveries
           <Button
             onClick={this.handleNewDelivery}
             bsStyle="primary"
             bsSize="sm"
             className="pull-right">
-            <Glyphicon glyph="asterisk"/> Crear nuevo delivery
+            <Glyphicon glyph="asterisk"/> Add new delivery
           </Button>
         </PageHeader>
 
         <Panel>
           <h4>
-            <Glyphicon glyph="filter"/> Filtros
+            <Glyphicon glyph="filter"/> Filters
           </h4>
           <Form inline>
             <FormGroup>
-              <ControlLabel>Nombre: </ControlLabel>
-              <FormControl value={this.state.filtroNombre} type="text" placeholder="Parilla" onChange={this.handleFiltroNombreChange}/>
+              <ControlLabel>Name: </ControlLabel>
+              <FormControl value={this.state.filterName} type="text" name="filterName" placeholder="Parilla" onChange={this.handleFilterChange}/>
             </FormGroup>
             <FormGroup>
-              <ControlLabel>Direccion: </ControlLabel>
-              <FormControl value={this.state.filtroDireccion} type="text" placeholder="Calle" onChange={this.handleFiltroDireccionChange}/>
+              <ControlLabel>Direction: </ControlLabel>
+              <FormControl value={this.state.filterDirection} type="text" name="filterDirection" placeholder="Calle" onChange={this.handleFilterChange}/>
             </FormGroup>
           </Form>
         </Panel>
 
-        <Grilla data={deliveries} columns={columns} widthPercent={100} editFunction={selectDelivery} deleteFunction={this.handleDeleteDelivery} orderBy={this.compareFunction}/>
+        <Grid data={deliveries} columns={columns} widthPercent={100} editFunction={selectDelivery} deleteFunction={this.handleDeleteDelivery} orderBy={this.compareFunction}/>
 
         {delivery ? <FormDelivery delivery={delivery}/> : null}
 
         <Modal bsSize="sm" show={this.state.showModalDelete} onHide={this.closeDeleteModal}>
           <Modal.Header closeButton>
-            <Modal.Title>Confirmar</Modal.Title>
+            <Modal.Title>Confirm</Modal.Title>
           </Modal.Header>
           <Modal.Footer>
-            <Button onClick={this.closeDeleteModal}>Cancelar</Button>
-            <Button bsStyle="danger" onClick={this.confirmDelete}>Eliminar</Button>
+            <Button onClick={this.closeDeleteModal}>Cancel</Button>
+            <Button bsStyle="danger" onClick={this.confirmDelete}>Delete</Button>
           </Modal.Footer>
         </Modal>
 

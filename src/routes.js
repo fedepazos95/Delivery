@@ -6,14 +6,14 @@ import { Route, Switch } from 'react-router-dom';
 import App from './components/App';
 
 // Containers
-import Inicio from './containers/Inicio';
+import Home from './containers/Home';
 import Deliveries from './containers/Deliveries';
 
 const AppRoutes = () =>
   <App>
     <Switch>
       <Route exact path="/deliveries" component={Deliveries} />
-      <Route component={Inicio}/>
+      <Route component={Home}/>
     </Switch>
   </App>;
 

@@ -5,11 +5,11 @@ import PropTypes from 'prop-types';
 // React Bootstrap Components
 import { Table, ButtonToolbar, Button, Glyphicon } from 'react-bootstrap';
 
-export default class Grilla extends Component {
+export default class Grid extends Component {
   static propTypes = {
     data: PropTypes.array.isRequired,
-    columns: PropTypes.array, //array<Obj>
-    widthPercent: PropTypes.number, //Porcentaje para definir tamaño
+    columns: PropTypes.array,
+    widthPercent: PropTypes.number,
     editFunction: PropTypes.func,
     deleteFunction: PropTypes.func,
     orderBy: PropTypes.func
@@ -17,7 +17,7 @@ export default class Grilla extends Component {
 
   renderColumns() {
     if (this.props.columns) {
-      // Llego con un array de columnas definido
+      // The grid have an array with columns
       return this.props.columns.map((column) => {
         return (
           <th key={column.key} onClick={() => this.props.orderBy(column)} className="cursor-pointer">
@@ -26,7 +26,7 @@ export default class Grilla extends Component {
         );
       });
     } else {
-      //Por defecto toma el primer objeto del array y obtiene sus keys para usarlas como nombre de las columnas
+      // If there is no array with columns, takes the first object to render and use his keys as names for the columns
       return Object.keys(this.props.data[0]).map((property) => {
         return (
           <th key={property} onClick={() => this.props.orderBy(column)}>
@@ -46,7 +46,7 @@ export default class Grilla extends Component {
           <td key={key}>{obj[column.key]}</td>
         );
       });
-      // Luego de generar automaticamente cada campo de la fila, agrego los botones de acciones
+      // Before render each row, add actions buttons
       values.push(
         <td key={'actions-' + obj}>
           <ButtonToolbar>
@@ -72,7 +72,7 @@ export default class Grilla extends Component {
         <thead>
           <tr>
             {columns}
-            {editFunction && deleteFunction ? <th>Acciones</th> : null}
+            {editFunction && deleteFunction ? <th>Actions</th> : null}
           </tr>
         </thead>
         <tbody>

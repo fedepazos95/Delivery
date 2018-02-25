@@ -1,39 +1,38 @@
-// Data para iniciar la app con info
 const deliveries = [
   {
     id: 1,
-    nombre: "Argentino",
-    descripcion: "Argentino casa de comidas",
-    especialidades: "Pizzas y empanadas",
-    direccion: "Calle 20",
-    horarioInicio: 9,
-    horarioFin: 23,
-    telefono: "48196084",
-    admNombre: "Juan",
-    admApellido: "Perez",
-    admTelefono: "1550809440",
+    name: "Argentino",
+    description: "Argentino casa de comidas",
+    specialties: "Pizzas y empanadas",
+    direction: "Calle 20",
+    startTime: 9,
+    endTime: 23,
+    phone: "48196084",
+    admName: "Juan",
+    admSurname: "Perez",
+    admPhone: "1550809440",
     admEmail: "juan.perez@gmail.com",
-    cmNombre: "Raul",
-    cmApellido: "Gonzalez",
-    cmTelefono: "1590846517",
+    cmName: "Raul",
+    cmSurname: "Gonzalez",
+    cmPhone: "1590846517",
     cmEmail: "raul.gonzalez@hotmail.com"
   },
   {
     id: 2,
-    nombre: "Bar BQ",
-    descripcion: "Bar BQ bebidas y tragos",
-    especialidades: "Coctails y bebidas",
-    direccion: "Calle 524",
-    horarioInicio: 7,
-    horarioFin: 20,
-    telefono: "40849562",
-    admNombre: "Juan",
-    admApellido: "Perez",
-    admTelefono: "1550809440",
+    name: "Bar BQ",
+    description: "Bar BQ bebidas y tragos",
+    specialties: "Coctails y bebidas",
+    direction: "Calle 524",
+    startTime: 7,
+    endTime: 20,
+    phone: "40849562",
+    admName: "Juan",
+    admSurname: "Perez",
+    admPhone: "1550809440",
     admEmail: "juan.perez@gmail.com",
-    cmNombre: "Raul",
-    cmApellido: "Gonzalez",
-    cmTelefono: "1590846517",
+    cmName: "Raul",
+    cmSurname: "Gonzalez",
+    cmPhone: "1590846517",
     cmEmail: "raul.gonzalez@hotmail.com"
   }
 ];
@@ -67,7 +66,7 @@ export const newDelivery = () => {
 }
 
 export const saveDelivery = (delivery) => {
-  // Asigna un ID aleatorio simulando el ingreso de registros nuevos a una base de datos
+  // Assign a random ID simulating the entry of new records into a database
   delivery['id'] = Math.floor((Math.random() * 1000) + 1);
   return {
     type: 'SAVE_DELIVERY',

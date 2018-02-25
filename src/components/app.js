@@ -3,9 +3,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // Components
-import Header from './Global/Header';
-import Content from './Global/Content';
-import Footer from './Global/Footer';
+import Header from './Header';
+import Footer from './Footer';
 
 export default class App extends Component {
   static propTypes = {
@@ -18,7 +17,9 @@ export default class App extends Component {
     return (
       <div>
         <Header title="Delivery" />
-        <Content body={children} />
+        <div className="container">
+          {children}
+        </div>
         <Footer />
       </div>
     );
